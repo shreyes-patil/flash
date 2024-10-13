@@ -50,6 +50,25 @@ struct ImageFilteringHelper {
             blackPointFilter.setValue(settings.blackPoint, forKey: "inputBlackPoint")
             currentImage = blackPointFilter.outputImage
         }
+        
+        switch settings.selectedFilter {
+                case .none:
+                    // No pre-built filter applied
+                    break
+                case .vivid:
+                    if let vividFilter = CIFilter(name: "CIColorControls") {
+                        vividFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                        vividFilter.setValue(1.5, forKey: kCIInputContrastKey) // Increased contrast
+                        vividFilter.setValue(1.5, forKey: kCIInputSaturationKey) // Boost saturation
+                        currentImage = vividFilter.outputImage!
+                    }
+                case .vividWarm:
+                    if let vividWarmFilter = CIFilter(name: "CITemperatureAndTint") {
+                        vividWarmFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                        vividWarmFilter.setValue(CIVector(x: 8000, y: 0), forKey: "inputNeutral") // Warmer tone
+                        currentImage = vividWarmFilter.outputImage!
+                    }
+                }
 
         // Apply exposure adjustment
         if let exposureFilter = CIFilter(name: "CIExposureAdjust") {

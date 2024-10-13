@@ -18,4 +18,11 @@ struct FilterSettings {
     var warmth: Float = 6500.0 // Default color temperature
     var tint: Float = 0.0
     var blackPoint: Float = 0.0
+    
+    var selectedFilter: PrebuiltFilter = .none
+}
+enum PrebuiltFilter {
+    case none
+    case vivid
+    case vividWarm
 }
