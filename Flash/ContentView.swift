@@ -8,20 +8,36 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
+            // Main image container with shadow and rounded corners
             if let selectedImage = selectedImage {
                 Image(uiImage: applyFilters(to: selectedImage))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 300, height: 300)
+                    .clipShape(RoundedRectangle(cornerRadius: 20)) // Rounded corners
+                    .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 10) // Soft shadow
+                    .padding(.bottom, 20)
             } else {
                 Text("Select an Image")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.gray)
             }
 
-            Button("Choose Photo") {
+            // Choose Photo button
+            Button(action: {
                 isImagePickerPresented = true
+            }) {
+                Text("Choose Photo")
+                    .foregroundColor(.white)
+                    .font(.headline)
+                    .frame(width: 200, height: 50)
+                    .background(Color.blue)
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5) // Soft shadow
             }
+            .padding(.bottom, 20)
+
+            // Pre-built filter picker
             FilterPickerView(selectedFilter: $filterSettings.selectedFilter)
 
             // Show the slider for the selected adjustment
@@ -51,39 +67,49 @@ struct ContentView: View {
                     }
                 }
                 .padding()
+                .background(Color.white) // Background for the slider area
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
             }
 
-            // Scrollable icons for adjustment options
+            // Scrollable icons for adjustment options with improved background and padding
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 20) {
-                    adjustmentButton(type: .brightness, icon: "sun.max")
-                    adjustmentButton(type: .contrast, icon: "circle.lefthalf.fill")
-                    adjustmentButton(type: .exposure, icon: "sun.haze")
-                    adjustmentButton(type: .saturation, icon: "eyedropper")
-                    adjustmentButton(type: .vibrance, icon: "paintbrush")
-                    adjustmentButton(type: .highlights, icon: "sunrise")
-                    adjustmentButton(type: .shadows, icon: "cloud.fill")
-                    adjustmentButton(type: .warmth, icon: "thermometer")
-                    adjustmentButton(type: .tint, icon: "paintpalette")
-                    adjustmentButton(type: .blackPoint, icon: "moon.fill")
+                    adjustmentButton(type: .brightness, icon: "sun.max.fill", color: .yellow)
+                    adjustmentButton(type: .contrast, icon: "circle.lefthalf.fill", color: .gray)
+                    adjustmentButton(type: .exposure, icon: "sun.haze.fill", color: .orange)
+                    adjustmentButton(type: .saturation, icon: "eyedropper.full", color: .blue)
+                    adjustmentButton(type: .vibrance, icon: "paintbrush.fill", color: .pink)
+                    adjustmentButton(type: .highlights, icon: "sunrise.fill", color: .purple)
+                    adjustmentButton(type: .shadows, icon: "cloud.fill", color: .black)
+                    adjustmentButton(type: .warmth, icon: "thermometer", color: .red)
+                    adjustmentButton(type: .tint, icon: "paintpalette.fill", color: .green)
+                    adjustmentButton(type: .blackPoint, icon: "moon.fill", color: .black)
                 }
                 .padding()
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5)
             }
+            .padding(.top, 10)
             .sheet(isPresented: $isImagePickerPresented) {
                 ImagePickerView(selectedImage: $selectedImage)
             }
         }
+        .padding(.horizontal)
     }
 
     // Helper function to create buttons for adjustments
-    func adjustmentButton(type: AdjustmentType, icon: String) -> some View {
+    func adjustmentButton(type: AdjustmentType, icon: String, color: Color) -> some View {
         Button(action: {
             activeAdjustment = type // Set active adjustment when the button is clicked
         }) {
             Image(systemName: icon)
                 .font(.title2)
-                .padding()
+                .foregroundColor(color)
+                .frame(width: 50, height: 50)
                 .background(Circle().fill(Color.gray.opacity(0.2)))
+                .shadow(color: color.opacity(0.4), radius: 5, x: 0, y: 5) // Button shadow
         }
     }
 

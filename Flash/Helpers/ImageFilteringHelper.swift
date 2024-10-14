@@ -82,22 +82,22 @@ struct ImageFilteringHelper {
                     vividFilter.setValue(0.05, forKey: kCIInputBrightnessKey) // Slightly brighter
                     currentImage = vividFilter.outputImage ?? currentImage
                 }
-            case .vividWarm:
-                // Apply vivid warm filter: moderate saturation increase, warmer tone
-                if let vividWarmFilter = CIFilter(name: "CIColorControls") {
-                    vividWarmFilter.setValue(currentImage, forKey: kCIInputImageKey)
-                    vividWarmFilter.setValue(1.1, forKey: kCIInputContrastKey) // Slightly increased contrast
-                    vividWarmFilter.setValue(1.25, forKey: kCIInputSaturationKey) // More noticeable saturation
-                    currentImage = vividWarmFilter.outputImage ?? currentImage
-                }
-                
-                // Now, adjust warmth for a warm effect
-                if let warmthFilter = CIFilter(name: "CITemperatureAndTint") {
-                    warmthFilter.setValue(currentImage, forKey: kCIInputImageKey)
-                    warmthFilter.setValue(CIVector(x: 7200, y: 0), forKey: "inputNeutral")  // Warmer tone (7200K)
-                    warmthFilter.setValue(CIVector(x: 6500, y: 0), forKey: "inputTargetNeutral") // Target 6500K as base
-                    currentImage = warmthFilter.outputImage ?? currentImage
-                }
+        case .vividWarm:
+               // Apply vivid warm filter: moderate saturation increase, warmer tone
+               if let vividWarmFilter = CIFilter(name: "CIColorControls") {
+                   vividWarmFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                   vividWarmFilter.setValue(1.08, forKey: kCIInputContrastKey) // Slight contrast increase
+                   vividWarmFilter.setValue(1.15, forKey: kCIInputSaturationKey) // Subtle saturation increase
+                   currentImage = vividWarmFilter.outputImage ?? currentImage
+               }
+
+               // Now, adjust warmth for a classic warm effect
+               if let warmthFilter = CIFilter(name: "CITemperatureAndTint") {
+                   warmthFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                   warmthFilter.setValue(CIVector(x: 7800, y: 0), forKey: "inputNeutral")  // Classic warm tone (7800K)
+                   warmthFilter.setValue(CIVector(x: 6500, y: 0), forKey: "inputTargetNeutral") // Keep the base neutral
+                   currentImage = warmthFilter.outputImage ?? currentImage
+               }
         }
 
 
