@@ -47,7 +47,7 @@ struct ContentView: View {
                     case .tint:
                         SliderView(title: "Tint", value: $filterSettings.tint, range: -100...100, step: 1)
                     case .blackPoint:
-                        SliderView(title: "Black Point", value: $filterSettings.blackPoint, range: 0...0.5, step: 0.001)
+                        SliderView(title: "Black Point", value: $filterSettings.blackPoint, range: 0...1.0, step: 0.05)
                     }
                 }
                 .padding()

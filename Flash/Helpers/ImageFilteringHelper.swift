@@ -57,21 +57,19 @@ struct ImageFilteringHelper {
 
         // Apply black point only if it's not 0 (neutral)
         if settings.blackPoint != 0.0 {
-            if let blackPointFilter = CIFilter(name: "CIColorMatrix") {
+            if let exposureFilter = CIFilter(name: "CIExposureAdjust") {
                 let blackPointValue = CGFloat(settings.blackPoint)
-                let blackPointVector = CIVector(x: 1, y: 1, z: 1, w: 0)
-                let biasVector = CIVector(x: blackPointValue, y: blackPointValue, z: blackPointValue, w: 0)
                 
-                blackPointFilter.setValue(currentImage, forKey: kCIInputImageKey)
-                blackPointFilter.setValue(blackPointVector, forKey: "inputRVector")
-                blackPointFilter.setValue(blackPointVector, forKey: "inputGVector")
-                blackPointFilter.setValue(blackPointVector, forKey: "inputBVector")
-                blackPointFilter.setValue(blackPointVector, forKey: "inputAVector")
-                blackPointFilter.setValue(biasVector, forKey: "inputBiasVector")
+                // Apply a stronger exposure reduction to mimic black point adjustment
+                exposureFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                exposureFilter.setValue(-blackPointValue * 2.0, forKey: kCIInputEVKey) // Stronger effect by multiplying more
                 
-                currentImage = blackPointFilter.outputImage ?? currentImage
+                currentImage = exposureFilter.outputImage ?? currentImage
             }
         }
+
+
+
         switch settings.selectedFilter {
             case .none:
                 break
