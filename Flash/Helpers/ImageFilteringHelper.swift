@@ -3,83 +3,115 @@ import UIKit
 
 struct ImageFilteringHelper {
     
-    // Apply multiple image adjustments
     static func applyFilters(to image: UIImage, with settings: FilterSettings) -> UIImage? {
         guard let cgImage = image.cgImage else { return nil }
         
         let context = CIContext() // Create a new CIContext
         
         // Convert UIImage to CIImage
-        let ciImage = CIImage(cgImage: cgImage)
+        var currentImage = CIImage(cgImage: cgImage)
         
-        // Apply color controls (brightness, contrast, saturation)
-        guard let colorControlsFilter = CIFilter(name: "CIColorControls") else { return nil }
-        colorControlsFilter.setValue(ciImage, forKey: kCIInputImageKey)
-        colorControlsFilter.setValue(settings.brightness, forKey: kCIInputBrightnessKey)
-        colorControlsFilter.setValue(settings.contrast, forKey: kCIInputContrastKey)
-        colorControlsFilter.setValue(settings.saturation, forKey: kCIInputSaturationKey)
-        
-        var currentImage = colorControlsFilter.outputImage
-        
-        // Apply vibrance
-        if let vibranceFilter = CIFilter(name: "CIVibrance") {
-            vibranceFilter.setValue(currentImage, forKey: kCIInputImageKey)
-            vibranceFilter.setValue(settings.vibrance, forKey: "inputAmount")
-            currentImage = vibranceFilter.outputImage
-        }
-        
-        // Apply highlights and shadows
-        if let highlightShadowFilter = CIFilter(name: "CIHighlightShadowAdjust") {
-            highlightShadowFilter.setValue(currentImage, forKey: kCIInputImageKey)
-            highlightShadowFilter.setValue(settings.highlights, forKey: "inputHighlightAmount")
-            highlightShadowFilter.setValue(settings.shadows, forKey: "inputShadowAmount")
-            currentImage = highlightShadowFilter.outputImage
-        }
-        
-        // Apply warmth (color temperature)
-        if let temperatureFilter = CIFilter(name: "CITemperatureAndTint") {
-            temperatureFilter.setValue(currentImage, forKey: kCIInputImageKey)
-            temperatureFilter.setValue(CIVector(x: CGFloat(settings.warmth), y: 0), forKey: "inputNeutral")
-            temperatureFilter.setValue(CIVector(x: CGFloat(settings.tint), y: 0), forKey: "inputTargetNeutral")
-            currentImage = temperatureFilter.outputImage
+        // Print the filter settings to debug
+        print("Applying Tint: \(settings.tint), Black Point: \(settings.blackPoint)")
+
+        // Apply color controls (brightness, contrast, saturation) only if non-default values are set
+        if settings.brightness != 0.0 || settings.contrast != 1.0 || settings.saturation != 1.0 {
+            if let colorControlsFilter = CIFilter(name: "CIColorControls") {
+                colorControlsFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                colorControlsFilter.setValue(settings.brightness, forKey: kCIInputBrightnessKey)
+                colorControlsFilter.setValue(settings.contrast, forKey: kCIInputContrastKey)
+                colorControlsFilter.setValue(settings.saturation, forKey: kCIInputSaturationKey)
+                currentImage = colorControlsFilter.outputImage ?? currentImage
+            }
         }
 
-        // Apply black point adjustment
-        if let blackPointFilter = CIFilter(name: "CIBlackPointAdjust") {
-            blackPointFilter.setValue(currentImage, forKey: kCIInputImageKey)
-            blackPointFilter.setValue(settings.blackPoint, forKey: "inputBlackPoint")
-            currentImage = blackPointFilter.outputImage
+        // Apply other filters similarly only if the values have changed from default
+        if settings.vibrance != 0.0 {
+            if let vibranceFilter = CIFilter(name: "CIVibrance") {
+                vibranceFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                vibranceFilter.setValue(settings.vibrance, forKey: "inputAmount")
+                currentImage = vibranceFilter.outputImage ?? currentImage
+            }
         }
-        
+
+        if settings.highlights != 0.0 || settings.shadows != 0.0 {
+            if let highlightShadowFilter = CIFilter(name: "CIHighlightShadowAdjust") {
+                highlightShadowFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                highlightShadowFilter.setValue(settings.highlights, forKey: "inputHighlightAmount")
+                highlightShadowFilter.setValue(settings.shadows, forKey: "inputShadowAmount")
+                currentImage = highlightShadowFilter.outputImage ?? currentImage
+            }
+        }
+
+        // Apply warmth (color temperature) and tint only if they are not neutral
+        if settings.warmth != 6500.0 || settings.tint != 0.0 {
+            if let temperatureFilter = CIFilter(name: "CITemperatureAndTint") {
+                let warmth = CGFloat(settings.warmth)
+                let tint = CGFloat(settings.tint)
+                temperatureFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                temperatureFilter.setValue(CIVector(x: warmth, y: 0), forKey: "inputNeutral")
+                temperatureFilter.setValue(CIVector(x: 6500, y: tint), forKey: "inputTargetNeutral")
+                currentImage = temperatureFilter.outputImage ?? currentImage
+            }
+        }
+
+        // Apply black point only if it's not 0 (neutral)
+        if settings.blackPoint != 0.0 {
+            if let blackPointFilter = CIFilter(name: "CIColorMatrix") {
+                let blackPointValue = CGFloat(settings.blackPoint)
+                let blackPointVector = CIVector(x: 1, y: 1, z: 1, w: 0)
+                let biasVector = CIVector(x: blackPointValue, y: blackPointValue, z: blackPointValue, w: 0)
+                
+                blackPointFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                blackPointFilter.setValue(blackPointVector, forKey: "inputRVector")
+                blackPointFilter.setValue(blackPointVector, forKey: "inputGVector")
+                blackPointFilter.setValue(blackPointVector, forKey: "inputBVector")
+                blackPointFilter.setValue(blackPointVector, forKey: "inputAVector")
+                blackPointFilter.setValue(biasVector, forKey: "inputBiasVector")
+                
+                currentImage = blackPointFilter.outputImage ?? currentImage
+            }
+        }
         switch settings.selectedFilter {
-                case .none:
-                    // No pre-built filter applied
-                    break
-                case .vivid:
-                    if let vividFilter = CIFilter(name: "CIColorControls") {
-                        vividFilter.setValue(currentImage, forKey: kCIInputImageKey)
-                        vividFilter.setValue(1.5, forKey: kCIInputContrastKey) // Increased contrast
-                        vividFilter.setValue(1.5, forKey: kCIInputSaturationKey) // Boost saturation
-                        currentImage = vividFilter.outputImage!
-                    }
-                case .vividWarm:
-                    if let vividWarmFilter = CIFilter(name: "CITemperatureAndTint") {
-                        vividWarmFilter.setValue(currentImage, forKey: kCIInputImageKey)
-                        vividWarmFilter.setValue(CIVector(x: 8000, y: 0), forKey: "inputNeutral") // Warmer tone
-                        currentImage = vividWarmFilter.outputImage!
-                    }
+            case .none:
+                break
+            case .vivid:
+                // Apply vivid filter: moderate increase in contrast and saturation
+                if let vividFilter = CIFilter(name: "CIColorControls") {
+                    vividFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                    vividFilter.setValue(1.15, forKey: kCIInputContrastKey)  // Moderate contrast increase
+                    vividFilter.setValue(1.2, forKey: kCIInputSaturationKey)  // Moderate saturation increase
+                    vividFilter.setValue(0.05, forKey: kCIInputBrightnessKey) // Slightly brighter
+                    currentImage = vividFilter.outputImage ?? currentImage
                 }
+            case .vividWarm:
+                // Apply vivid warm filter: moderate saturation increase, warmer tone
+                if let vividWarmFilter = CIFilter(name: "CIColorControls") {
+                    vividWarmFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                    vividWarmFilter.setValue(1.1, forKey: kCIInputContrastKey) // Slightly increased contrast
+                    vividWarmFilter.setValue(1.25, forKey: kCIInputSaturationKey) // More noticeable saturation
+                    currentImage = vividWarmFilter.outputImage ?? currentImage
+                }
+                
+                // Now, adjust warmth for a warm effect
+                if let warmthFilter = CIFilter(name: "CITemperatureAndTint") {
+                    warmthFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                    warmthFilter.setValue(CIVector(x: 7200, y: 0), forKey: "inputNeutral")  // Warmer tone (7200K)
+                    warmthFilter.setValue(CIVector(x: 6500, y: 0), forKey: "inputTargetNeutral") // Target 6500K as base
+                    currentImage = warmthFilter.outputImage ?? currentImage
+                }
+        }
+
 
         // Apply exposure adjustment
-        if let exposureFilter = CIFilter(name: "CIExposureAdjust") {
-            exposureFilter.setValue(currentImage, forKey: kCIInputImageKey)
-            exposureFilter.setValue(settings.exposure, forKey: kCIInputEVKey)
-            currentImage = exposureFilter.outputImage
-        }
-        
-        // Render the final image
-        if let outputImage = currentImage,
-           let cgimg = context.createCGImage(outputImage, from: outputImage.extent) {
+               if let exposureFilter = CIFilter(name: "CIExposureAdjust") {
+                   exposureFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                   exposureFilter.setValue(settings.exposure, forKey: kCIInputEVKey)
+                   currentImage = exposureFilter.outputImage ?? currentImage
+               }
+
+        // Render the final image after all filters are applied
+        if let cgimg = context.createCGImage(currentImage, from: currentImage.extent) {
             return UIImage(cgImage: cgimg)
         }
         

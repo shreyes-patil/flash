@@ -23,6 +23,7 @@ struct ContentView: View {
                 isImagePickerPresented = true
             }
             FilterPickerView(selectedFilter: $filterSettings.selectedFilter)
+
             // Show the slider for the selected adjustment
             if let activeAdjustment = activeAdjustment {
                 VStack {
@@ -46,26 +47,28 @@ struct ContentView: View {
                     case .tint:
                         SliderView(title: "Tint", value: $filterSettings.tint, range: -100...100, step: 1)
                     case .blackPoint:
-                        SliderView(title: "Black Point", value: $filterSettings.blackPoint, range: 0...0.5, step: 0.01)
+                        SliderView(title: "Black Point", value: $filterSettings.blackPoint, range: 0...0.5, step: 0.001)
                     }
                 }
                 .padding()
             }
 
-            // Icons for adjustment options (simulated as text buttons here)
-            HStack {
-                adjustmentButton(type: .brightness, icon: "sun.max")
-                adjustmentButton(type: .contrast, icon: "circle.lefthalf.fill")
-                adjustmentButton(type: .exposure, icon: "sun.haze")
-                adjustmentButton(type: .saturation, icon: "eyedropper")
-                adjustmentButton(type: .vibrance, icon: "paintbrush")
-                adjustmentButton(type: .highlights, icon: "sunrise")
-                adjustmentButton(type: .shadows, icon: "cloud.fill")
-                adjustmentButton(type: .warmth, icon: "thermometer")
-                adjustmentButton(type: .tint, icon: "paintpalette")
-                adjustmentButton(type: .blackPoint, icon: "moon.fill")
+            // Scrollable icons for adjustment options
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 20) {
+                    adjustmentButton(type: .brightness, icon: "sun.max")
+                    adjustmentButton(type: .contrast, icon: "circle.lefthalf.fill")
+                    adjustmentButton(type: .exposure, icon: "sun.haze")
+                    adjustmentButton(type: .saturation, icon: "eyedropper")
+                    adjustmentButton(type: .vibrance, icon: "paintbrush")
+                    adjustmentButton(type: .highlights, icon: "sunrise")
+                    adjustmentButton(type: .shadows, icon: "cloud.fill")
+                    adjustmentButton(type: .warmth, icon: "thermometer")
+                    adjustmentButton(type: .tint, icon: "paintpalette")
+                    adjustmentButton(type: .blackPoint, icon: "moon.fill")
+                }
+                .padding()
             }
-            .padding()
             .sheet(isPresented: $isImagePickerPresented) {
                 ImagePickerView(selectedImage: $selectedImage)
             }
