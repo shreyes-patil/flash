@@ -26,3 +26,16 @@ enum PrebuiltFilter {
     case vivid
     case vividWarm
 }
+
+enum AdjustmentType: String {
+    case brightness = "Brightness"
+    case contrast = "Contrast"
+    case exposure = "Exposure"
+    case saturation = "Saturation"
+    case vibrance = "Vibrance"
+    case highlights = "Highlights"
+    case shadows = "Shadows"
+    case warmth = "Warmth"
+    case tint = "Tint"
+    case blackPoint = "Black Point"
+}

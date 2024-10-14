@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct FilterPickerView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @Binding var selectedFilter: PrebuiltFilter
 
-#Preview {
-    FilterPickerView()
+    var body: some View {
+        Picker("Pre-built Filter", selection: $selectedFilter) {
+            Text("None").tag(PrebuiltFilter.none)
+            Text("Vivid").tag(PrebuiltFilter.vivid)
+            Text("Vivid Warm").tag(PrebuiltFilter.vividWarm)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .padding()
+    }
 }
