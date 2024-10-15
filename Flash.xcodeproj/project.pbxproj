@@ -37,7 +37,7 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		0E2326952CBAE1CC00BE4A43 /* Helpers */ = {
+		0E2326C02CBDC9F300BE4A43 /* Helpers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Helpers;
 			sourceTree = "<group>";
@@ -74,12 +74,12 @@
 		0E6D88512CBAC75100857B9F /* Flash */ = {
 			isa = PBXGroup;
 			children = (
-				0E2326952CBAE1CC00BE4A43 /* Helpers */,
-				0E2326942CBAE1B000BE4A43 /* ViewModels */,
-				0E2326932CBAE19F00BE4A43 /* Views */,
 				0E2326922CBAE18E00BE4A43 /* Models */,
-				0E6D88522CBAC75100857B9F /* FlashApp.swift */,
+				0E2326932CBAE19F00BE4A43 /* Views */,
+				0E2326942CBAE1B000BE4A43 /* ViewModels */,
+				0E2326C02CBDC9F300BE4A43 /* Helpers */,
 				0E6D88542CBAC75100857B9F /* ContentView.swift */,
+				0E6D88522CBAC75100857B9F /* FlashApp.swift */,
 				0E6D88562CBAC75500857B9F /* Assets.xcassets */,
 				0E6D88582CBAC75500857B9F /* Preview Content */,
 			);
@@ -113,7 +113,7 @@
 				0E2326922CBAE18E00BE4A43 /* Models */,
 				0E2326932CBAE19F00BE4A43 /* Views */,
 				0E2326942CBAE1B000BE4A43 /* ViewModels */,
-				0E2326952CBAE1CC00BE4A43 /* Helpers */,
+				0E2326C02CBDC9F300BE4A43 /* Helpers */,
 			);
 			name = Flash;
 			productName = Flash;

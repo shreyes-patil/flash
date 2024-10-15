@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct ChoosePhotoButton: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @Binding var isImagePickerPresented: Bool
 
-#Preview {
-    ChoosePhotoButton()
+    var body: some View {
+        Button(action: {
+            isImagePickerPresented = true
+        }) {
+            Text("Choose Photo")
+                .foregroundColor(.white)
+                .font(.headline)
+                .frame(width: 200, height: 50)
+                .background(Color.blue)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.5), radius: 10, x: 0, y: 5) // Soft shadow
+        }
+        .padding(.bottom, 20)
+    }
 }
