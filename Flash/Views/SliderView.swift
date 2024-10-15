@@ -54,7 +54,7 @@ struct CustomSliderView: View {
                         .accentColor(.black)
                         .padding(.horizontal, 20)
                 }
-                .frame(height: 30)
+                .frame(height: 20)
             }
         }
         .padding()

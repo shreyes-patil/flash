@@ -68,6 +68,17 @@ struct ImageFilteringHelper {
             }
         }
 
+        if settings.gradientIntensity > 0.0 {
+            if let vignetteFilter = CIFilter(name: "CIVignette") {
+                vignetteFilter.setValue(currentImage, forKey: kCIInputImageKey)
+                vignetteFilter.setValue(currentImage.extent.width * 0.5, forKey: kCIInputRadiusKey) // Adjust radius
+                vignetteFilter.setValue(settings.gradientIntensity * 2.0, forKey: kCIInputIntensityKey) // Control intensity
+                
+                if let vignetteImage = vignetteFilter.outputImage {
+                    currentImage = vignetteImage
+                }
+            }
+        }
 
 
         switch settings.selectedFilter {

@@ -18,6 +18,7 @@ struct FilterSettings {
     var warmth: Float = 6500.0 // Default color temperature
     var tint: Float = 0.0
     var blackPoint: Float = 0.0
+    var gradientIntensity : Float = 0.0
     
     var selectedFilter: PrebuiltFilter = .none
 }
@@ -38,4 +39,5 @@ enum AdjustmentType: String {
     case warmth = "Warmth"
     case tint = "Tint"
     case blackPoint = "Black Point"
+    case gradient = "Gradient"
 }

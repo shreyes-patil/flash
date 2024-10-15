@@ -23,6 +23,7 @@ struct AdjustmentIconsView: View {
                 adjustmentButton(type: .warmth, icon: "thermometer", color: .red)
                 adjustmentButton(type: .tint, icon: "paintpalette.fill", color: .green)
                 adjustmentButton(type: .blackPoint, icon: "moon.fill", color: .black)
+                adjustmentButton(type: .gradient, icon: "circle.lefthalf.filled", color: .orange)
             }
             .padding()
             .background(Color.white)

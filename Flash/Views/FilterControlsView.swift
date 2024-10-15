@@ -15,9 +15,9 @@ struct FilterControlsView: View {
         VStack {
             switch activeAdjustment {
             case .brightness:
-                CustomSliderView(value: $filterSettings.brightness, range: -1...1, step: 0.1, title: "Brightness", displayRange: -100...100)
+                CustomSliderView(value: $filterSettings.brightness, range: -0.25...0.25, step: 0.05, title: "Brightness", displayRange: -100...100)
             case .contrast:
-                CustomSliderView(value: $filterSettings.contrast, range: 0.5...2, step: 0.1, title: "Contrast", displayRange: -100...100)
+                CustomSliderView(value: $filterSettings.contrast, range: 0.75...1.5, step: 0.05, title: "Contrast", displayRange: -100...100)
             case .exposure:
                 CustomSliderView(value: $filterSettings.exposure, range: -2...2, step: 0.1, title: "Exposure", displayRange: -100...100)
             case .saturation:
@@ -33,7 +33,11 @@ struct FilterControlsView: View {
             case .tint:
                 CustomSliderView(value: $filterSettings.tint, range: -100...100, step: 1, title: "Tint", displayRange: -100...100)
             case .blackPoint:
-                CustomSliderView(value: $filterSettings.blackPoint, range: 0...1.0, step: 0.05, title: "Black Point", displayRange: -100...100)
+                CustomSliderView(value: $filterSettings.blackPoint, range: 0...1.0, step: 0.05, title: "Black Point", displayRange: 0...100)
+            case .gradient:
+                CustomSliderView(value: $filterSettings.gradientIntensity, range: 0...1.0, step: 0.05, title: "Vignette", displayRange: 0...100)
+
+
             }
         }
         .padding()
